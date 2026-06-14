@@ -414,7 +414,7 @@ export class TeslaCardEditor extends LitElement {
       .nav {
         display: flex;
         flex-direction: column;
-        margin-top: 4px;
+        margin-top: 16px;
       }
       .nav-row {
         display: flex;
@@ -452,6 +452,7 @@ export class TeslaCardEditor extends LitElement {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 280px;
       }
       .subpage-head {
         display: flex;
@@ -500,6 +501,7 @@ export class TeslaCardEditor extends LitElement {
       }
       .row-label {
         flex: 1;
+        color: var(--primary-text-color);
       }
       .section {
         display: flex;
@@ -507,6 +509,7 @@ export class TeslaCardEditor extends LitElement {
         gap: 8px;
         font-weight: 600;
         margin: 18px 0 8px;
+        color: var(--primary-text-color);
       }
       .section ha-icon {
         --mdc-icon-size: 18px;
