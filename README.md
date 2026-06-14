@@ -32,7 +32,8 @@ tesla-card/
     compositor.js        # Tesla 2D configurator fallback
     model-loader.js      # lazy <model-viewer> loader
     model-cache.js       # IndexedDB cache for the .glb models
-    actions.js           # pluggable action-bar registry
+    value.js             # entity/template value resolution + live templates
+    items.js             # configurable action-bar items + tap actions
     styles.js            # card styling
     card.js              # <tesla-card> element
     editor.js            # <tesla-card-editor> visual editor
@@ -44,25 +45,45 @@ tesla-card/
 
 ## Installation
 
+### Automatic (HACS) — recommended
+
+1. **Add the repository.** Click the badge:
+
+   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MichelFR&repository=ha-tesla-card&category=dashboard)
+
+   …or in HACS → ⋮ → **Custom repositories**, add
+   `https://github.com/MichelFR/ha-tesla-card` with category **Dashboard**.
+2. Open the **Tesla Card** entry in HACS and click **Download**.
+3. **Add the Lovelace resource** (HACS usually does this automatically; verify
+   via [![Add Lovelace resource](https://my.home-assistant.io/badges/lovelace_resources.svg)](https://my.home-assistant.io/redirect/lovelace_resources/)):
+
+   ```yaml
+   url: /hacsfiles/ha-tesla-card/tesla-card/tesla-card.js
+   type: module
+   ```
+
+4. **Hard-refresh** the browser (Ctrl/Cmd+Shift+R).
+5. Edit a dashboard → **Add card** → search **"Tesla Card"**.
+
 ### Manual
 
-1. Copy the whole `tesla-card/` folder to `<config>/www/tesla-card/`.
-2. Add it as a Lovelace resource (Settings → Dashboards → ⋮ → Resources):
+1. Download this repo and copy the whole `tesla-card/` folder to
+   `<config>/www/tesla-card/` (so you have
+   `<config>/www/tesla-card/tesla-card.js`).
+2. Add it as a Lovelace resource — **Settings → Dashboards → ⋮ → Resources →
+   Add resource** ([![Add Lovelace resource](https://my.home-assistant.io/badges/lovelace_resources.svg)](https://my.home-assistant.io/redirect/lovelace_resources/)):
 
    ```yaml
    url: /local/tesla-card/tesla-card.js
    type: module
    ```
 
-3. Hard-refresh the browser (Ctrl/Cmd+Shift+R).
+3. **Hard-refresh** the browser (Ctrl/Cmd+Shift+R).
+4. Edit a dashboard → **Add card** → search **"Tesla Card"**.
 
 > A back-compat shim at `<config>/www/tesla-card.js` (resource
 > `/local/tesla-card.js`) is also provided for older installs — it just imports
 > the modular entry above.
-
-### HACS
-
-Add this repository as a custom repository (category: *Dashboard*), then install.
 
 ## Model caching
 
