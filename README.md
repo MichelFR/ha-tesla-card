@@ -4,6 +4,11 @@ A custom Lovelace card that mimics the Tesla mobile app: vehicle name, battery
 level, status line, a **rotatable 3D vehicle** (drag to rotate) and a
 fully-configurable action bar.
 
+[![Validate](https://github.com/MichelFR/ha-tesla-card/actions/workflows/validate.yml/badge.svg)](https://github.com/MichelFR/ha-tesla-card/actions/workflows/validate.yml)
+[![Release](https://github.com/MichelFR/ha-tesla-card/actions/workflows/release.yml/badge.svg)](https://github.com/MichelFR/ha-tesla-card/actions/workflows/release.yml)
+[![GitHub release](https://img.shields.io/github/v/release/MichelFR/ha-tesla-card)](https://github.com/MichelFR/ha-tesla-card/releases)
+[![hacs](https://img.shields.io/badge/HACS-Dashboard-41BDF5.svg)](https://github.com/hacs/integration)
+
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=MichelFR&repository=ha-tesla-card&category=dashboard)
 
 > Adds this repo to **HACS** in one click. After installing, add the resource
@@ -256,6 +261,19 @@ items:
 
 The 3D render falls back to Tesla's public 2D compositor (single 3/4 angle) if
 no model is available; set `image:` for any static picture of your car.
+
+## Releases & validation
+
+CI runs on every push (`.github/workflows`):
+
+- **Validate** — [HACS validation](https://github.com/hacs/action) (category
+  *plugin*) plus a `node --check` of every module. (Note: Home Assistant's
+  *hassfest* only validates custom **integrations** with a `manifest.json`, so it
+  does not apply to a dashboard/frontend card — HACS validation is the
+  equivalent here.)
+- **Release** — bump `CARD_VERSION` in `tesla-card/tesla-card.js`, push to
+  `main`, and a matching `vX.Y.Z` tag + GitHub Release is created automatically.
+  HACS then offers the new version.
 
 ## Credits
 
