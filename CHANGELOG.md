@@ -7,15 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.1] - 2026-06-15
 
-### Security
-
-- Bump the `esbuild` build dependency to `0.28.1` to clear
-  [GHSA-gv7w-rqvm-qjhr](https://github.com/advisories/GHSA-gv7w-rqvm-qjhr)
-  (build-time only; the shipped bundle is unaffected). `npm audit` now reports
-  no vulnerabilities.
-
-## [3.1.0] - 2026-06-15
-
 ### Added
 
 - **Charging view** that matches the Tesla app: a green charging pill showing
@@ -43,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Validate` workflow now builds the bundle and fails if the committed output is
   stale; `Release` reads the version from `frontend/package.json`.
+
+### Security
+
+- `esbuild` build dependency pinned to `0.28.1` to clear
+  [GHSA-gv7w-rqvm-qjhr](https://github.com/advisories/GHSA-gv7w-rqvm-qjhr)
+  (build-time only; the shipped bundle is unaffected). `npm audit` reports no
+  vulnerabilities.
 
 ## [3.0.0] - 2026-06-15
 
@@ -79,5 +77,4 @@ Pre-release development that shipped before the first tagged version:
 - HACS support, install buttons, and the initial Tesla-app-style layout.
 
 [3.1.1]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.1.1
-[3.1.0]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.1.0
 [3.0.0]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.0.0
