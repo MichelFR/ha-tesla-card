@@ -40,12 +40,27 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Extract changelog section
+        id: notes
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="$VERSION" '
+              $0 ~ ("^## \\[" ver "\\]") {grab=1; next}
+              grab && /^## / {exit}
+              grab {print}
+            ' CHANGELOG.md > notes.md
+          fi
+          if [ -s notes.md ]; then echo "has=true" >> "$GITHUB_OUTPUT"; else echo "has=false" >> "$GITHUB_OUTPUT"; fi
+
       - name: Create release
         if: steps.check.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ steps.version.outputs.version }}" \
-            --title "v${{ steps.version.outputs.version }}" \
-            --generate-notes \
-            --target "${{ github.sha }}"
+          VERSION="${{ steps.version.outputs.version }}"
+          if [ "${{ steps.notes.outputs.has }}" = "true" ]; then
+            gh release create "v$VERSION" --title "v$VERSION" --notes-file notes.md --target "${{ github.sha }}"
+          else
+            gh release create "v$VERSION" --title "v$VERSION" --generate-notes --target "${{ github.sha }}"
+          fi

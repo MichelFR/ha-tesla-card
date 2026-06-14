@@ -306,9 +306,12 @@ CI runs on every push (`.github/workflows`):
   *hassfest* only validates custom **integrations** with a `manifest.json`, so it
   does not apply to a dashboard/frontend card — HACS validation is the
   equivalent here.)
-- **Release** — bump `CARD_VERSION` in `tesla-card/tesla-card.js`, push to
-  `main`, and a matching `vX.Y.Z` tag + GitHub Release is created automatically.
-  HACS then offers the new version.
+- **Release** — bump the `version` in `frontend/package.json`, add a section to
+  [`CHANGELOG.md`](CHANGELOG.md), and push to `main`: a matching `vX.Y.Z` tag +
+  GitHub Release is created automatically, using that changelog section as the
+  release notes. HACS then offers the new version.
+
+See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
 ## Credits
 
