@@ -5,6 +5,15 @@ All notable changes to the Tesla Card are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2026-06-15
+
+### Security
+
+- Bump the `esbuild` build dependency to `0.28.1` to clear
+  [GHSA-gv7w-rqvm-qjhr](https://github.com/advisories/GHSA-gv7w-rqvm-qjhr)
+  (build-time only; the shipped bundle is unaffected). `npm audit` now reports
+  no vulnerabilities.
+
 ## [3.1.0] - 2026-06-15
 
 ### Added
@@ -69,5 +78,6 @@ Pre-release development that shipped before the first tagged version:
 - **IndexedDB model caching** (works over plain http) so large models load once.
 - HACS support, install buttons, and the initial Tesla-app-style layout.
 
+[3.1.1]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.1.1
 [3.1.0]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.1.0
 [3.0.0]: https://github.com/MichelFR/ha-tesla-card/releases/tag/v3.0.0

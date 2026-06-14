@@ -1,6 +1,6 @@
 {
   "name": "tesla-card",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
   "description": "Build for the Tesla Card (Home Assistant Lovelace card)",
   "type": "module",
@@ -9,7 +9,7 @@
     "watch": "npm run build -- --watch"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.1",
     "lit": "^3.2.0"
   }
 }
