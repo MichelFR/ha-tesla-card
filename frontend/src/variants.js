@@ -1,12 +1,9 @@
-/**
- * Vehicle variants. Each bundles its own 3D model (hosted on the HA instance),
+/* Vehicle variants. Each bundles its own 3D model (hosted alongside the card),
  * the compositor model used for the 2D fallback, model years shown in the
- * picker, and the body-paint material names used for 3D recolouring.
- */
+ * picker, and the body-paint material names used for 3D recolouring. */
 
-// Resolve the models folder relative to this module so the card works whether
-// it's installed manually (/local/…) or via HACS (/hacsfiles/…).
-const MODELS_BASE = new URL("../models", import.meta.url).href;
+// Resolved relative to the built bundle so it works under /local/ and /hacsfiles/.
+const MODELS_BASE = new URL("./models", import.meta.url).href;
 
 export const VARIANTS = {
   model3: {
@@ -48,20 +45,19 @@ export const VARIANTS = {
     years: "2016–2020",
     glb: `${MODELS_BASE}/model-s/model-s.glb`,
     compositor: "ms",
-    paintMaterials: [], // single combined material — recolour disabled
+    paintMaterials: [],
   },
   modelx: {
     label: "Model X",
     years: "2016–2021",
     glb: `${MODELS_BASE}/model-x/model-x.glb`,
     compositor: "mx",
-    paintMaterials: [], // single combined material — recolour disabled
+    paintMaterials: [],
   },
 };
 
 export const DEFAULT_VARIANT = "model3_highland";
 
-/** Legacy `model:` option (m3/my/ms/mx) -> variant key. */
 export const LEGACY_MODEL_MAP = {
   m3: "model3_highland",
   my: "modely_juniper",
@@ -69,7 +65,6 @@ export const LEGACY_MODEL_MAP = {
   mx: "modelx",
 };
 
-/** Resolve a config object to its variant key. */
 export function resolveVariantKey(config) {
   if (config.variant && VARIANTS[config.variant]) return config.variant;
   if (config.model && LEGACY_MODEL_MAP[config.model]) return LEGACY_MODEL_MAP[config.model];

@@ -1,13 +1,5 @@
-/**
- * Configurable action-bar items. Each item is fully user-defined:
- *   - icon            (mdi icon)
- *   - name            (optional label / tooltip)
- *   - value           (optional value source — entity or template — to display)
- *   - show_value      (default true when a value is set)
- *   - tap_action      (Home-Assistant style action; default more-info)
- *
- * An item with no tap_action and a value simply displays the value.
- */
+/* Configurable action-bar items: icon, optional name, optional value (entity or
+ * template) to display, and a Home-Assistant style tap_action. */
 
 import { valueOf, stateObjOfSource } from "./value.js";
 
@@ -20,15 +12,7 @@ export const DEFAULT_ITEMS = [
 ];
 
 const ACTIVE_STATES = new Set([
-  "on",
-  "open",
-  "unlocked",
-  "heat",
-  "cool",
-  "heat_cool",
-  "charging",
-  "home",
-  "playing",
+  "on", "open", "unlocked", "heat", "cool", "heat_cool", "charging", "home", "playing",
 ]);
 
 export function itemEntity(item) {
@@ -51,15 +35,12 @@ export function performAction(card, action, item) {
   if (!hass) return;
   const act = action || { action: "more-info" };
   const entity = act.entity || itemEntity(item || {});
-
   switch (act.action) {
     case "none":
       return;
-    case "toggle": {
-      if (!entity) return;
-      hass.callService(entity.split(".")[0], "toggle", { entity_id: entity });
+    case "toggle":
+      if (entity) hass.callService(entity.split(".")[0], "toggle", { entity_id: entity });
       return;
-    }
     case "more-info":
       card.openMoreInfo(entity);
       return;

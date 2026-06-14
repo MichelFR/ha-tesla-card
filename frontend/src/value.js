@@ -1,12 +1,10 @@
-/**
- * Value sources — every value-bearing field can be backed by an entity (with an
+/* Value sources — every value-bearing field can be backed by an entity (with an
  * optional attribute) OR a Jinja template, resolved live.
  *
- * Shape:
- *   { entity: "sensor.x", attribute?: "battery_level" }
- *   { template: "{{ states('sensor.x') | int }}" }
+ *   { entity: "sensor.x", attribute?: "y" }
+ *   { template: "{{ ... }}" }
  *   { value: "static" }
- *   "sensor.x"   (shorthand for { entity: "sensor.x" })
+ *   "sensor.x"  (shorthand for { entity: "sensor.x" })
  */
 
 export function normalizeSource(vs) {
@@ -43,21 +41,16 @@ export function templatesIn(...sources) {
   return out;
 }
 
-/**
- * Manages live `render_template` subscriptions for a host element. Call sync()
- * with the current template set on each update; it adds/removes subscriptions
- * as needed and triggers a host re-render when a result changes.
- */
+/* Manages live `render_template` subscriptions for a host element. */
 export class TemplateController {
   constructor(host) {
     this._host = host;
-    this._subs = new Map(); // template -> Promise<unsub>
-    this.results = {}; // template -> rendered value
+    this._subs = new Map();
+    this.results = {};
   }
 
   sync(hass, templates) {
     const want = new Set(templates);
-
     for (const [tpl, unsubP] of this._subs) {
       if (!want.has(tpl)) {
         unsubP.then((u) => typeof u === "function" && u()).catch(() => {});
@@ -65,7 +58,6 @@ export class TemplateController {
         delete this.results[tpl];
       }
     }
-
     if (!hass || !hass.connection) return;
     for (const tpl of want) {
       if (this._subs.has(tpl)) continue;

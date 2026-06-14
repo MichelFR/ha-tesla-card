@@ -1,22 +1,12 @@
-/**
- * Persistent client-side cache for the (large) .glb models.
- *
- * Uses IndexedDB — unlike the Cache API / service workers it works in a
- * non-secure context (plain http://homeassistant.local, the common HA setup)
- * and comfortably stores multi-MB blobs. The cached blob is exposed to
- * <model-viewer> as an object URL, so after the first load there is zero
- * network traffic for the model, even across page reloads.
- *
- * Falls back to the original URL (browser HTTP cache) if IndexedDB is
- * unavailable or anything goes wrong.
- */
+/* Persistent client-side cache for the (large) .glb models, using IndexedDB
+ * (works over plain http://, unlike the Cache API). The cached blob is exposed
+ * to <model-viewer> as an object URL, so after the first load there is zero
+ * network traffic for the model, even across page reloads. */
 
 const DB_NAME = "tesla-card-cache";
 const STORE = "models";
 const DB_VERSION = 1;
 
-// Per-session map of url -> object URL so a single fetch/blob is reused across
-// re-renders and multiple card instances.
 const _objectUrls = new Map();
 
 function openDb() {
@@ -60,35 +50,26 @@ function idbPut(db, key, value) {
   });
 }
 
-/**
- * Returns a usable URL for `url`, served from IndexedDB when possible.
- * Resolves to an object URL (blob:) for cached/fetched models, or the original
- * url on any failure.
- */
 export async function getCachedModelUrl(url) {
   if (!url) return url;
   if (_objectUrls.has(url)) return _objectUrls.get(url);
-
   try {
     const db = await openDb();
     let blob = await idbGet(db, url);
-
     if (!(blob instanceof Blob)) {
       const resp = await fetch(url, { credentials: "same-origin" });
       if (!resp.ok) return url;
       blob = await resp.blob();
       await idbPut(db, url, blob);
     }
-
     const objectUrl = URL.createObjectURL(blob);
     _objectUrls.set(url, objectUrl);
     return objectUrl;
   } catch (e) {
-    return url; // graceful fallback to the network / HTTP cache
+    return url;
   }
 }
 
-/** Drop every cached model (e.g. after updating model files). */
 export async function clearModelCache() {
   _objectUrls.forEach((u) => URL.revokeObjectURL(u));
   _objectUrls.clear();

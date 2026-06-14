@@ -1,19 +1,10 @@
-/**
- * Tesla configurator compositor — the 2D fallback used when no .glb model is
- * available. Only exposes a single STUD_3QTR angle (not rotatable).
- *
- * Option codes are kept minimal (paint + wheel); extra/stale codes make the
- * compositor return HTTP 412.
- */
+/* Tesla configurator compositor — the 2D fallback used when no .glb model is
+ * available. Option codes are kept minimal (paint + wheel); extra/stale codes
+ * make the compositor return HTTP 412. */
 
 import { COLORS } from "./colors.js";
 
-export const COMPOSITOR_WHEEL = {
-  m3: "$W38B",
-  my: "$WY19B",
-  ms: "$WS90",
-  mx: "$WX00",
-};
+export const COMPOSITOR_WHEEL = { m3: "$W38B", my: "$WY19B", ms: "$WS90", mx: "$WX00" };
 
 export function buildCompositorUrl(compositorModel, colorKey, optionsOverride) {
   const wheel = COMPOSITOR_WHEEL[compositorModel] || "$W38B";

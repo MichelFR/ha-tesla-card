@@ -19,13 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Read CARD_VERSION
+      - name: Read version
         id: version
         run: |
-          VERSION=$(grep -oE 'CARD_VERSION[[:space:]]*=[[:space:]]*"[^"]+"' tesla-card/tesla-card.js \
-            | sed -E 's/.*"([^"]+)".*/\1/')
+          VERSION=$(node -p "require('./frontend/package.json').version")
           if [ -z "$VERSION" ]; then
-            echo "Could not read CARD_VERSION" >&2
+            echo "Could not read version" >&2
             exit 1
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
