@@ -7,6 +7,7 @@ const LABELS = {
   name: "Vehicle name",
   variant: "Vehicle / facelift",
   color: "Paint colour",
+  mode: "Render mode",
   model_url: "Custom 3D model URL (.glb / .gltf)",
   auto_rotate: "Auto-rotate",
   disable_zoom: "Disable zoom",
@@ -150,6 +151,13 @@ export class TeslaCardEditor extends Lit {
     if (j < 0 || j >= items.length) return;
     [items[i], items[j]] = [items[j], items[i]];
     this._updateItems(items);
+    // keep the open subpage pointed at the same item after reordering
+    const top = this._stack[this._stack.length - 1];
+    if (top && top.id === "item" && top.index === i) {
+      const ns = [...this._stack];
+      ns[ns.length - 1] = { ...top, index: j };
+      this._stack = ns;
+    }
   }
 
   /* ---- pages ------------------------------------------------------- */
@@ -168,20 +176,23 @@ export class TeslaCardEditor extends Lit {
       },
     ];
     return html`
-      <div class="rows">
+      <mwc-list>
         ${rows.map(
           (r) => html`
-            <div class="row" @click=${() => this._push({ id: r.id, title: r.title })}>
-              <ha-icon class="row-icon" icon=${r.icon}></ha-icon>
-              <div class="row-main">
-                <div class="row-title">${r.title}</div>
-                ${r.sub ? html`<div class="row-sub">${r.sub}</div>` : ""}
-              </div>
-              <ha-icon icon="mdi:chevron-right"></ha-icon>
-            </div>
+            <ha-list-item
+              graphic="icon"
+              ?twoline=${!!r.sub}
+              hasMeta
+              @click=${() => this._push({ id: r.id, title: r.title })}
+            >
+              <ha-icon slot="graphic" icon=${r.icon}></ha-icon>
+              ${r.title}
+              ${r.sub ? html`<span slot="secondary">${r.sub}</span>` : ""}
+              <ha-icon slot="meta" icon="mdi:chevron-right"></ha-icon>
+            </ha-list-item>
           `
         )}
-      </div>
+      </mwc-list>
     `;
   }
 
@@ -212,6 +223,18 @@ export class TeslaCardEditor extends Lit {
                 options: [
                   { value: "", label: "Original (model default)" },
                   ...Object.entries(COLORS).map(([value, c]) => ({ value, label: c.label })),
+                ],
+              },
+            },
+          },
+          {
+            name: "mode",
+            selector: {
+              select: {
+                mode: "dropdown",
+                options: [
+                  { value: "3d", label: "3D — rotatable model" },
+                  { value: "2d", label: "2D — image" },
                 ],
               },
             },
@@ -250,28 +273,23 @@ export class TeslaCardEditor extends Lit {
 
   _renderItemsList() {
     return html`
-      <div class="rows">
+      <mwc-list>
         ${this._items.map(
           (it, i) => html`
-            <div class="row">
-              <ha-icon class="row-icon" icon=${it.icon || "mdi:gesture-tap-button"}></ha-icon>
-              <div
-                class="row-main"
-                @click=${() => this._push({ id: "item", index: i, title: it.name || "Item" })}
-              >
-                <div class="row-title">${it.name || it.icon || `Item ${i + 1}`}</div>
-                <div class="row-sub">${(it.tap_action && it.tap_action.action) || "more-info"}</div>
-              </div>
-              <ha-icon-button @click=${() => this._moveItem(i, -1)}>
-                <ha-icon icon="mdi:arrow-up"></ha-icon>
-              </ha-icon-button>
-              <ha-icon-button @click=${() => this._moveItem(i, 1)}>
-                <ha-icon icon="mdi:arrow-down"></ha-icon>
-              </ha-icon-button>
-            </div>
+            <ha-list-item
+              graphic="icon"
+              twoline
+              hasMeta
+              @click=${() => this._push({ id: "item", index: i, title: it.name || "Item" })}
+            >
+              <ha-icon slot="graphic" icon=${it.icon || "mdi:gesture-tap-button"}></ha-icon>
+              ${it.name || it.icon || `Item ${i + 1}`}
+              <span slot="secondary">${(it.tap_action && it.tap_action.action) || "more-info"}</span>
+              <ha-icon slot="meta" icon="mdi:chevron-right"></ha-icon>
+            </ha-list-item>
           `
         )}
-      </div>
+      </mwc-list>
       <mwc-button raised @click=${this._addItem}>
         <ha-icon icon="mdi:plus"></ha-icon>&nbsp;Add item
       </mwc-button>
@@ -282,6 +300,18 @@ export class TeslaCardEditor extends Lit {
     const it = this._items[i];
     if (!it) return this._renderRoot();
     return html`
+      <div class="itembar">
+        <ha-icon-button .disabled=${i === 0} @click=${() => this._moveItem(i, -1)}>
+          <ha-icon icon="mdi:arrow-up"></ha-icon>
+        </ha-icon-button>
+        <ha-icon-button
+          .disabled=${i === this._items.length - 1}
+          @click=${() => this._moveItem(i, 1)}
+        >
+          <ha-icon icon="mdi:arrow-down"></ha-icon>
+        </ha-icon-button>
+        <span class="itembar-label">Item ${i + 1} of ${this._items.length}</span>
+      </div>
       <ha-selector
         .hass=${this.hass}
         .selector=${{ icon: {} }}
@@ -368,32 +398,20 @@ export class TeslaCardEditor extends Lit {
         flex-direction: column;
         gap: 12px;
       }
-      .rows {
-        display: flex;
-        flex-direction: column;
+      mwc-list {
+        --mdc-list-vertical-padding: 0;
+        margin: 0 -8px;
       }
-      .row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 8px;
-        border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
-        cursor: pointer;
-      }
-      .row:hover {
-        background: var(--secondary-background-color);
-      }
-      .row-icon {
+      ha-list-item ha-icon[slot="meta"] {
         color: var(--secondary-text-color);
       }
-      .row-main {
-        flex: 1;
-        min-width: 0;
+      .itembar {
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
-      .row-title {
-        font-size: 14px;
-      }
-      .row-sub {
+      .itembar-label {
+        margin-left: 4px;
         font-size: 12px;
         color: var(--secondary-text-color);
       }

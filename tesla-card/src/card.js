@@ -141,8 +141,14 @@ export class TeslaCard extends Lit {
     return `${v} ${unit}`.trim();
   }
 
+  /** "3d" (rotatable model) or "2d" (image). Defaults to 3d. */
+  get renderMode() {
+    return this._config.mode === "2d" ? "2d" : "3d";
+  }
+
   /** The .glb to render in 3D, or "" to fall back to the 2D compositor. */
   get glbUrl() {
+    if (this.renderMode === "2d") return "";
     if (this._config.image || this._config.image_entity) return "";
     if ("model_url" in this._config) return this._config.model_url || "";
     return this.variant.glb || "";
