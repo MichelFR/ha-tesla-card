@@ -27,26 +27,40 @@ fully-configurable action bar.
 
 ## Project structure
 
+Source lives in `frontend/src/` and is bundled with esbuild (Lit is bundled in)
+to a single self-contained file at `tesla-card/tesla-card.js`. The 3D assets sit
+next to the bundle and are loaded at runtime.
+
 ```
-tesla-card/
-  tesla-card.js          # entry module (register this as the resource)
-  src/                   # modular source
-    lit.js               # Lit base reused from the HA frontend
-    variants.js          # vehicles / facelifts + bundled 3D models
-    colors.js            # paint colours (3D recolour + 2D codes)
-    compositor.js        # Tesla 2D configurator fallback
-    model-loader.js      # lazy <model-viewer> loader
-    model-cache.js       # IndexedDB cache for the .glb models
-    value.js             # entity/template value resolution + live templates
-    items.js             # configurable action-bar items + tap actions
-    styles.js            # card styling
+frontend/
+  package.json           # esbuild + lit; `npm run build`
+  src/
+    index.js             # entry — registers the elements
     card.js              # <tesla-card> element
-    editor.js            # <tesla-card-editor> visual editor
-  vendor/
-    model-viewer.min.js  # self-contained 3D viewer (offline)
+    editor.js            # <tesla-card-editor> — subpage editor
+    const.js format.js localize.js ha-components.js styles.js
+    variants.js colors.js compositor.js          # vehicle + paint
+    value.js items.js                            # entity/template values + items
+    model-loader.js model-cache.js               # <model-viewer> + IndexedDB cache
+    views/battery.js views/vehicle.js            # render fragments
+    translations/en.json translations/de.json
+tesla-card/              # what gets deployed / served
+  tesla-card.js          # built bundle (register this as the resource)
+  vendor/model-viewer.min.js
   models/                # built-in 3D models, one folder per vehicle
     model-3/ model-3-highland/ model-y/ model-y-juniper/ model-s/ model-x/
 ```
+
+### Development
+
+```sh
+cd frontend
+npm install
+npm run build      # or: npm run watch
+```
+
+The build output (`tesla-card/tesla-card.js`) is committed so HACS/manual
+installs need no build step.
 
 ## Installation
 
@@ -100,7 +114,7 @@ IndexedDB is used (rather than the Cache API) because it also works over plain
 model file, clear the cache from the browser console:
 
 ```js
-import("/local/tesla-card/src/model-cache.js").then((m) => m.clearModelCache());
+indexedDB.deleteDatabase("tesla-card-cache");
 ```
 
 ## Configuration
@@ -115,10 +129,15 @@ variant: model3_highland        # picks the 3D model + year (see table below)
 color: white                    # white | black | grey | blue | red | #rrggbb
 
 # value fields — each is an entity (+ optional attribute) OR a template
-battery: { entity: sensor.tessi_battery }
+battery: { entity: sensor.tessi_battery }       # SoC
 charging: { entity: binary_sensor.tessi_charging }
+charge_power: { entity: sensor.tessi_charger_power }  # shown while charging
 range: { template: "{{ states('sensor.tessi_range') }} km" }
 status: { entity: sensor.tessi_shift_state }
+
+show_progress: true             # battery progress bar (always shown while charging)
+show_battery_label: true        # label next to the % on the battery row
+battery_label: { entity: sensor.tessi_battery }      # optional; defaults to SoC name
 
 # the action bar is a list of fully-configurable items
 items:
@@ -140,16 +159,28 @@ items:
 
 ### Visual editor
 
-The editor is a **subpage navigator** (sticky header with a back arrow), not
-collapsibles. The root lists: **General**, **Vehicle & paint**, **3D model**,
-**Status values**, **Items**. Each value field has an **Entity / Template**
-toggle, and each item is edited on its own subpage with an icon picker, an
-optional value, and Home Assistant's native **action** editor (tap-action /
-click events).
+The editor is a **subpage navigator** — the root is a native HA settings list
+(nav rows); each row opens a subpage with a sticky header + back button. The
+pages are **Vehicle & paint**, **3D model**, **Battery & charging**, **Status**
+and **Items**. Each value field has an **Entity / Template** segmented toggle,
+and each item is edited on its own subpage with an icon picker, an optional
+value, and Home Assistant's native **action** editor (tap-action / click
+events).
+
+## Battery & charging
+
+- `show_progress` (default `false`) — a battery progress bar. It is **always**
+  shown while charging.
+- `show_battery_label` (default `false`) — show a label next to the % on the
+  battery row; `battery_label` sets it (defaults to the SoC entity's name).
+- While `charging` is truthy, a green **charging pill** appears with the value
+  from `charge_power` (e.g. `0.3 kW`), an animated bolt, and the progress bar
+  fills green with a shimmer animation.
 
 ### Value fields (entity or template)
 
-`battery`, `charging`, `range`, `status` and each item's `value` accept either:
+`battery`, `charging`, `charge_power`, `battery_label`, `range`, `status` and
+each item's `value` accept either:
 
 ```yaml
 { entity: sensor.x }                 # state
@@ -221,8 +252,12 @@ back to Tesla's 2D configurator render (a single 3/4 angle — not rotatable).
 | `variant`          | string  | `model3_highland` | Vehicle + facelift (see Variants table).                    |
 | `color`            | string  | —                 | Paint colour: name or `#rrggbb`.                            |
 | `paint_materials`  | list    | per-variant       | Override which 3D materials get recoloured.                  |
-| `battery`          | value   | —                 | Battery % — entity or template (see Value fields).          |
+| `battery`          | value   | —                 | Battery % / SoC — entity or template (see Value fields).    |
 | `charging`         | value   | —                 | Charging state — `on`/`charging` means charging.            |
+| `charge_power`     | value   | —                 | Charging power shown in the pill while charging.            |
+| `show_progress`    | boolean | `false`           | Battery progress bar (always shown while charging).         |
+| `show_battery_label` | boolean | `false`         | Show a label next to the % on the battery row.              |
+| `battery_label`    | value   | SoC name          | The battery-row label (entity/template/text).               |
 | `range`            | value   | —                 | Range shown next to the battery %.                          |
 | `status`           | value   | —                 | Status line under the battery.                             |
 | `items`            | list    | 5 placeholders    | The action bar (see Items).                                  |

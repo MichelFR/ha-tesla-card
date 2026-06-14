@@ -1,0 +1,56 @@
+{
+  "page": {
+    "vehicle": "Fahrzeug & Lack",
+    "model": "3D-Modell",
+    "battery": "Batterie & Laden",
+    "status": "Status",
+    "items": "Elemente"
+  },
+  "editor": {
+    "mode_entity": "Entität",
+    "mode_template": "Vorlage",
+    "entity": "Entität",
+    "attribute": "Attribut (optional)",
+    "value_template": "Vorlage",
+    "add_item": "Element hinzufügen",
+    "delete_item": "Element löschen",
+    "item_n": "Element {n} von {total}",
+    "not_set": "nicht gesetzt",
+    "automatic": "Standard"
+  },
+  "field": {
+    "name": "Fahrzeugname",
+    "variant": "Fahrzeug / Facelift",
+    "color": "Lackfarbe",
+    "mode": "Darstellung",
+    "model_url": "Eigene 3D-Modell-URL (.glb / .gltf)",
+    "auto_rotate": "Automatisch drehen",
+    "disable_zoom": "Zoom deaktivieren",
+    "camera_orbit": "Kameraposition",
+    "image": "Eigene 2D-Bild-URL",
+    "image_entity": "Bild- / Kamera-Entität",
+    "icon": "Symbol",
+    "item_name": "Name (optional)"
+  },
+  "slot": {
+    "battery": "Batterie / SoC",
+    "battery_label": "Batterie-Beschriftung",
+    "charging": "Ladezustand",
+    "charge_power": "Ladeleistung",
+    "range": "Reichweite",
+    "status": "Statuszeile",
+    "value": "Anzuzeigender Wert"
+  },
+  "toggle": {
+    "show_battery_label": "Beschriftung neben % anzeigen",
+    "show_progress": "Fortschrittsbalken anzeigen",
+    "show_value": "Wert unter Symbol anzeigen"
+  },
+  "tap_action": "Tippaktion",
+  "card": {
+    "charging": "Lädt",
+    "asleep": "Schläft",
+    "parked_locked": "Geparkt · Verriegelt",
+    "parked_unlocked": "Geparkt · Entriegelt"
+  }
+}

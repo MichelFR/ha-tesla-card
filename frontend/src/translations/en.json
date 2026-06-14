@@ -1,0 +1,56 @@
+{
+  "page": {
+    "vehicle": "Vehicle & paint",
+    "model": "3D model",
+    "battery": "Battery & charging",
+    "status": "Status",
+    "items": "Items"
+  },
+  "editor": {
+    "mode_entity": "Entity",
+    "mode_template": "Template",
+    "entity": "Entity",
+    "attribute": "Attribute (optional)",
+    "value_template": "Template",
+    "add_item": "Add item",
+    "delete_item": "Delete item",
+    "item_n": "Item {n} of {total}",
+    "not_set": "not set",
+    "automatic": "default"
+  },
+  "field": {
+    "name": "Vehicle name",
+    "variant": "Vehicle / facelift",
+    "color": "Paint colour",
+    "mode": "Render mode",
+    "model_url": "Custom 3D model URL (.glb / .gltf)",
+    "auto_rotate": "Auto-rotate",
+    "disable_zoom": "Disable zoom",
+    "camera_orbit": "Camera orbit",
+    "image": "Custom 2D image URL",
+    "image_entity": "Image / camera entity",
+    "icon": "Icon",
+    "item_name": "Name (optional)"
+  },
+  "slot": {
+    "battery": "Battery / SoC",
+    "battery_label": "Battery label",
+    "charging": "Charging state",
+    "charge_power": "Charging power",
+    "range": "Range",
+    "status": "Status line",
+    "value": "Value to display"
+  },
+  "toggle": {
+    "show_battery_label": "Show label next to %",
+    "show_progress": "Show progress bar",
+    "show_value": "Show value under icon"
+  },
+  "tap_action": "Tap action",
+  "card": {
+    "charging": "Charging",
+    "asleep": "Asleep",
+    "parked_locked": "Parked · Locked",
+    "parked_unlocked": "Parked · Unlocked"
+  }
+}

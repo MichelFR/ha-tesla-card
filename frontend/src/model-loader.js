@@ -1,10 +1,7 @@
-/**
- * Lazily loads the self-contained Google <model-viewer> bundle. Local first
- * (works offline), CDN as a fallback. Loaded once per page.
- */
+/* Lazily loads the self-contained Google <model-viewer> bundle. Local first
+ * (works offline), CDN as a fallback. Loaded once per page. */
 
-// Resolved relative to this module so it works under /local/ and /hacsfiles/.
-const MODEL_VIEWER_LOCAL = new URL("../vendor/model-viewer.min.js", import.meta.url).href;
+const MODEL_VIEWER_LOCAL = new URL("./vendor/model-viewer.min.js", import.meta.url).href;
 const MODEL_VIEWER_CDN =
   "https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js";
 

@@ -1,7 +1,5 @@
-/**
- * Paint colours: a hex used to recolour the 3D body material and a Tesla
- * configurator code used for the 2D compositor fallback.
- */
+/* Paint colours: a hex used to recolour the 3D body material and a Tesla
+ * configurator code used for the 2D compositor fallback. */
 
 export const COLORS = {
   white: { label: "Pearl White", hex: "#e9e9ec", code: "$PPSW" },
@@ -11,7 +9,6 @@ export const COLORS = {
   red: { label: "Red Multi-Coat", hex: "#8c1c1c", code: "$PR01" },
 };
 
-/** sRGB hex -> linear RGBA factor for model-viewer setBaseColorFactor. */
 export function hexToLinearRgba(hex) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || "");
   if (!m) return null;
@@ -22,7 +19,6 @@ export function hexToLinearRgba(hex) {
   return [lin(m[1]), lin(m[2]), lin(m[3]), 1];
 }
 
-/** Resolve a config `color` value (named key or #rrggbb) to a hex string. */
 export function resolveColorHex(color) {
   if (!color) return null;
   if (COLORS[color]) return COLORS[color].hex;

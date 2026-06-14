@@ -18,17 +18,23 @@ jobs:
         with:
           category: plugin
 
-  lint:
-    name: JS syntax check
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: node --check all modules
+      - name: Install & build
+        working-directory: frontend
         run: |
-          for f in tesla-card.js tesla-card/tesla-card.js tesla-card/src/*.js; do
-            echo "checking $f"
-            node --check "$f"
-          done
+          npm ci
+          npm run build
+      - name: Ensure committed bundle is up to date
+        run: |
+          if ! git diff --quiet -- tesla-card/tesla-card.js; then
+            echo "::error::tesla-card/tesla-card.js is out of date — run 'npm run build' in frontend/ and commit."
+            git --no-pager diff --stat -- tesla-card/tesla-card.js
+            exit 1
+          fi
